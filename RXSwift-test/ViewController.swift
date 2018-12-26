@@ -493,7 +493,6 @@ extension ViewController {
         }
         
         sequenceThatErrors.retry()
-            .debug()
             .subscribe(onNext: {print($0)})
             .disposed(by: self.disposeBag)
         
@@ -501,7 +500,6 @@ extension ViewController {
         /// try Yourself
         
         _ = Observable.just("Hello, RxSwift!")
-            .debug("observable")
             .subscribe()
     }
     
