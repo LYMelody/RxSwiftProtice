@@ -91,19 +91,108 @@ class ViewController: UIViewController {
         .bind(to: result.rx.text)
         .disposed(by: self.disposeBag)
         
-        /// Rx操作符
-        ObservableRefs()
+        let subject1 = BehaviorSubject(value: "A")
+        let subject2 = BehaviorSubject(value: "B")
+        
+        let variable: Variable<String> = Variable("a")
+        
+        let subVariable = Variable(subject1)
+        
+        /// 测试自己绑定自己
+        firstFld.rx.text.orEmpty
+            .map{ String((Int($0) ?? 0) + 1) }
+            .bind(to: firstFld.rx.text)
+            .disposed(by: disposeBag)
+
+        firstFld.rx.text.orEmpty
+            .subscribe(onNext: { text in
+                print("测试自己绑定自己之后还能绑定观察者么: \(text)")
+            })
+            .disposed(by: disposeBag)
+
+        
+//        variable.asObservable()
+//            .map{ $0.lowercased() }
+//            .bind(to: variable)
+//            .disposed(by: disposeBag)
+        
+//        variable.asObservable()
+//            .subscribe(onNext: {
+//                print("########\($0)")
+//            })
+//            .disposed(by: disposeBag)
+        
+        subVariable.asObservable()
+            .flatMap{ $0 }
+            .materialize()
+            .map({ (event) -> String in
+                switch event {
+                case .error(let error):
+                    return error.localizedDescription
+                case .next(let str):
+                    return str
+                case .completed:
+                    return "completed"
+                }
+            })
+            .subscribe(onNext: {
+                print("@@@@@@@@@@\($0)")
+            },onError: {
+                print("########\($0)")
+            })
+            .disposed(by: disposeBag)
+
+        subject1.asObservable()
+            .flatMap{ Observable.just($0)}
+            .subscribe(onNext: {
+                print("#####\($0)")
+            }, onError: { error in
+                print(error)
+            })
+            .disposed(by: disposeBag)
+        
+        
+        subject1.onNext("C")
+        variable.value = "b"
+        variable.value = "c"
+        variable.value = "d"
+        subVariable.value = subject2
+        subject2.onNext("D")
+        subject1.onNext("E")
+        subject1.onError(NSError(domain: "Test", code: -1, userInfo: nil))
+        subject1.onNext("4")
+        subject1.onNext("3")
+        
+//        /// Rx操作符
+//        ObservableRefs()
     
     }
     
+    func returnUpper(with char: String) -> Observable<String> {
+        return Observable.just(char.uppercased())
+    }
+    
+    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
 }
 
 extension ViewController {
+    
+    func testFlatMap() {
+        
+        
+        
+        
+        
+    }
+    
+    
+    
+    
     
     func ObservableRefs() {
         
