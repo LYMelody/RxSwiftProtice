@@ -8,5 +8,5 @@ target 'RXSwift-test' do
  pod 'RxSwift'
  pod 'RxCocoa'
  pod 'SnapKit'
-
+ pod 'SwiftLint'
 end

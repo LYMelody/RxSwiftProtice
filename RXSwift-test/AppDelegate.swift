@@ -5,6 +5,7 @@
 //  Created by 周辉平 on 2018/3/30.
 //  Copyright © 2018年 fightOrganization. All rights reserved.
 //
+//swiftlint:disable line_length
 
 import UIKit
 
@@ -13,15 +14,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 
-        let nav = UINavigationController(rootViewController: ViewController())
-        
-        window?.rootViewController = nav
+        let navigator = UINavigationController(rootViewController: ViewController())
+
+        window?.rootViewController = navigator
         window?.backgroundColor = .white
         window?.makeKeyAndVisible()
-        
+
         return true
     }
 
@@ -47,6 +47,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-
 }
-
