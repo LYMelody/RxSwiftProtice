@@ -103,7 +103,6 @@ class ViewController: UIViewController {
         }
 
         /// 订阅观察者
-        //swiftlint:disable line_Length
         Observable.combineLatest(fFld.rx.text.orEmpty, sFld.rx.text.orEmpty) { (firs, seco) -> Int in
             return (Int(firs) ?? 0) + (Int(seco) ?? 0)
         }
