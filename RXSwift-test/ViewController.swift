@@ -12,11 +12,30 @@ import RxCocoa
 import SnapKit
 import RxSwift
 
+let json = """
+{
+"nick_name": "job",
+"point": 600,
+"description": "this is a test about encodable"
+}
+""".data(using: .utf8)!
+
+struct UserModle: Codable {
+    var nickName: String
+    var point: Int
+    var description: String?
+//    enum CodingKeys: String, CodingKey {
+//        case nickName = "nick_name"
+//        case point
+//    }
+
+}
+
 class ViewController: UIViewController {
 
     var disposeBag = DisposeBag()
 
-    lazy var firstFld: UITextField = {
+    lazy var fFld: UITextField = {
         let textFld = UITextField()
         textFld.font = UIFont.systemFont(ofSize: 16)
         textFld.placeholder = "enter a number"
@@ -29,7 +48,7 @@ class ViewController: UIViewController {
         return textFld
     }()
 
-    lazy var secondFld: UITextField = {
+    lazy var sFld: UITextField = {
         let textFld = UITextField()
         textFld.font = UIFont.systemFont(ofSize: 16)
         textFld.placeholder = "enter a number"
@@ -62,33 +81,33 @@ class ViewController: UIViewController {
         self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.black]
 
         //第一个输入
-        self.view.addSubview(firstFld)
-        self.view.addSubview(secondFld)
+        self.view.addSubview(fFld)
+        self.view.addSubview(sFld)
         self.view.addSubview(result)
 
-        firstFld.snp.makeConstraints { (make) in
+        fFld.snp.makeConstraints { (make) in
             make.top.equalTo(self.view).offset(100)
             make.left.equalTo(self.view).offset(60)
             make.right.equalTo(self.view).offset(-60)
             make.height.equalTo(40)
         }
 
-        secondFld.snp.makeConstraints { (make) in
-            make.top.equalTo(firstFld.snp.bottom).offset(20)
-            make.left.right.height.equalTo(firstFld)
+        sFld.snp.makeConstraints { (make) in
+            make.top.equalTo(fFld.snp.bottom).offset(20)
+            make.left.right.height.equalTo(fFld)
         }
 
         result.snp.makeConstraints { (make) in
-            make.top.equalTo(secondFld.snp.bottom).offset(20)
-            make.left.right.height.equalTo(secondFld)
+            make.top.equalTo(sFld.snp.bottom).offset(20)
+            make.left.right.height.equalTo(sFld)
         }
 
         /// 订阅观察者
-        // swiftlint:disable line_length
-        Observable.combineLatest(firstFld.rx.text.orEmpty, secondFld.rx.text.orEmpty) { (textValue1, textValue2) -> Int in
-            return (Int(textValue1) ?? 0) + (Int(textValue2) ?? 0)
+        //swiftlint:disable line_Length
+        Observable.combineLatest(fFld.rx.text.orEmpty, sFld.rx.text.orEmpty) { (firs, seco) -> Int in
+            return (Int(firs) ?? 0) + (Int(seco) ?? 0)
         }
-        // swiftlint:enable line_length
+
         .map { $0.description }
         .bind(to: result.rx.text)
         .disposed(by: self.disposeBag)
@@ -101,12 +120,12 @@ class ViewController: UIViewController {
         let subVariable = Variable(subject1)
 
         /// 测试自己绑定自己
-        firstFld.rx.text.orEmpty
+        fFld.rx.text.orEmpty
             .map { String((Int($0) ?? 0) + 1) }
-            .bind(to: firstFld.rx.text)
+            .bind(to: fFld.rx.text)
             .disposed(by: disposeBag)
 
-        firstFld.rx.text.orEmpty
+        fFld.rx.text.orEmpty
             .subscribe(onNext: { text in
                 print("测试自己绑定自己之后还能绑定观察者么: \(text)")
             })
@@ -153,8 +172,15 @@ class ViewController: UIViewController {
         subject1.onNext("3")
 
 //        /// Rx操作符
-//        ObservableRefs()
-
+//        observableRefs()
+        let deCoder = JSONDecoder()
+        deCoder.keyDecodingStrategy = .convertFromSnakeCase
+        do {
+            let user = try deCoder.decode(UserModle.self, from: json)
+            print("###########\(user.nickName)")
+        } catch (let error) {
+            print("@@@@@@@@\(error)")
+        }
     }
 
     func returnUpper(with char: String) -> Observable<String> {
