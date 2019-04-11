@@ -103,10 +103,9 @@ class ViewController: UIViewController {
         }
 
         /// 订阅观察者
-        Observable.combineLatest(fFld.rx.text.orEmpty, sFld.rx.text.orEmpty) { (firs, seco) -> Int in
-            return (Int(firs) ?? 0) + (Int(seco) ?? 0)
+        Observable.combineLatest(fFld.rx.text.orEmpty, sFld.rx.text.orEmpty) { (fir, seco) -> Int in
+            return (Int(fir) ?? 0) + (Int(seco) ?? 0)
         }
-
         .map { $0.description }
         .bind(to: result.rx.text)
         .disposed(by: self.disposeBag)
