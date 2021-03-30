@@ -1,0 +1,3 @@
+[submodule "SwiftAndGit"]
+	path = SwiftAndGit
+	url = https://github.com/zhou87/SwiftAndGit.git
